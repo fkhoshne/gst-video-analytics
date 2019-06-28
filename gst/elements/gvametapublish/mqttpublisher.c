@@ -25,7 +25,7 @@ MQTTClient mqtt_open_connection(MQTTPublishConfig *gvametapublish) {
 
 void mqtt_close_connection(MQTTClient client) {
     MQTTClient_disconnect(client, 60);
-    MQTTClient_destroy(client);
+    MQTTClient_destroy(&client);
 }
 
 MetapublishStatusMessage mqtt_write_message(MQTTClient client, MQTTPublishConfig *gvametapublish, GstBuffer *buffer) {
