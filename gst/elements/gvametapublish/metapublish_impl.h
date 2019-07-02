@@ -8,7 +8,13 @@
 #define __METAPUBLISHIMPL_H__
 
 #include "gstgvametapublish.h"
+#ifdef PAHO_INC
 #include "mqttpublisher.h"
+#endif
+#ifdef KAFKA_INC
+#include "kafkapublisher.h"
+#endif
+#include "filepublisher.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "statusmessage.h"
@@ -19,15 +25,26 @@ typedef struct _MetapublishImpl MetapublishImpl;
 struct _MetapublishImpl {
     publishType type;
     //MQTT
-    MQTTClient mqtt_client;
+    #ifdef PAHO_INC
     MQTTPublishConfig *mqtt_config;
+    MQTTClient mqtt_client;
+    #endif
+    //Kafka
+    #ifdef KAFKA_INC
+    KafkaPublishConfig *kafka_config;
+    rd_kafka_t *kafka_producerHandler;
+    rd_kafka_topic_t *kafka_rkt;
+    #endif
+    //File
+    FilePublishConfig *file_config;
+    FILE *pFile;
 };
 
 MetapublishImpl* getMPInstance();
 
 
 gint OpenConnection(GstGvaMetaPublish*);
-gint CloseConnection();
+gint CloseConnection(GstGvaMetaPublish*);
 void WriteMessage(GstGvaMetaPublish *gvametapublish, GstBuffer *buf);
 
 

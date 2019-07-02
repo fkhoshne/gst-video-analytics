@@ -46,10 +46,8 @@ enum {
 static guint gst_interpret_signals[LAST_SIGNAL] = {0};
 
 // File specific constants
-#define DEFAULT_PUBLISH_METHOD "mqtt"
+#define DEFAULT_PUBLISH_METHOD "file"
 #define DEFAULT_FILE_PATH NULL
-#define OF_BATCH "batch"
-#define OF_STREAM "stream"
 #define DEFAULT_OUTPUT_FORMAT OF_BATCH
 
 // Broker specific constants
@@ -390,9 +388,7 @@ static gboolean gst_gva_meta_publish_stop(GstBaseTransform *trans) {
         gvametapublish->broker_finalizefunction(gvametapublish);
     }*/
 
-    printf("Attempt to Close Connection");
-    CloseConnection();
-    printf("Close Connection success");
+    CloseConnection(gvametapublish);
 
     gst_gva_meta_publish_reset(gvametapublish);
 
