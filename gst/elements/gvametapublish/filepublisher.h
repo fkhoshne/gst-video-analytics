@@ -27,21 +27,10 @@ struct _FilePublishConfig {
 
 #define BATCH "batch"
 #define STREAM "stream"
-#define MAX_RESPONSE_MESSAGE 1024
 #define MIN_FILE_LEN 4
 
 MetapublishStatusMessage file_open(FILE **pFile, FilePublishConfig *config);
 MetapublishStatusMessage file_close(FILE **pFile, FilePublishConfig *config);
 MetapublishStatusMessage file_write(FILE **pFile, FilePublishConfig *config, GstBuffer *buffer);
-
-typedef enum _publish_error {
-    E_PUBLISH_SUCCESS = 0,
-    E_PUBLISH_ERROR = -1,
-    E_PUBLISH_ERROR_WRITING_FILE = -2,
-    E_PUBLISH_ERROR_NO_INFERENCE = -3,
-    E_PUBLISH_ERROR_FILE_EXISTS = -4,
-    E_PUBLISH_ERROR_FILE_CREATE = -5,
-    E_PUBLISH_ERROR_INVALID_FILEPATH = -6
-} FilePublishError;
 
 #endif

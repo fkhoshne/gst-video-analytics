@@ -19,11 +19,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum { NONE, PUBLISH_FILE, PUBLISH_KAFKA, PUBLISH_MQTT } publishType;
 typedef struct _MetapublishImpl MetapublishImpl;
 
 struct _MetapublishImpl {
-    publishType type;
+    GstGVAMetaPublishMethodType type;
 // MQTT
 #ifdef PAHO_INC
     MQTTPublishConfig *mqtt_config;
@@ -43,8 +42,8 @@ struct _MetapublishImpl {
 MetapublishImpl *getMPInstance();
 void initializeMetaPublishImpl(GstGVAMetaPublishMethodType);
 
-gint OpenConnection(GstGvaMetaPublish *);
-gint CloseConnection(GstGvaMetaPublish *);
-void WriteMessage(GstGvaMetaPublish *gvametapublish, GstBuffer *buf);
+MetapublishStatusMessage OpenConnection(GstGvaMetaPublish *);
+MetapublishStatusMessage CloseConnection(GstGvaMetaPublish *);
+MetapublishStatusMessage WriteMessage(GstGvaMetaPublish *gvametapublish, GstBuffer *buf);
 
 #endif /* __METAPUBLISHIMPL_H__ */

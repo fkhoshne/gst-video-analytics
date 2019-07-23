@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_RESPONSE_MESSAGE 1024
+
 #ifdef KAFKA_INC
 #include "librdkafka/rdkafka.h"
 
@@ -25,8 +27,8 @@ struct _KafkaPublishConfig {
     gboolean signal_handoffs;
 };
 
-void kafka_open_connection(KafkaPublishConfig *, rd_kafka_t *, rd_kafka_topic_t *);
-void kafka_close_connection(rd_kafka_t *, rd_kafka_topic_t *);
+MetapublishStatusMessage kafka_open_connection(KafkaPublishConfig *, rd_kafka_t *, rd_kafka_topic_t *);
+MetapublishStatusMessage kafka_close_connection(rd_kafka_t *, rd_kafka_topic_t *);
 MetapublishStatusMessage kafka_write_message(rd_kafka_t *producerHandler, rd_kafka_topic_t *kafka_topic,
                                              GstBuffer *buffer);
 #endif

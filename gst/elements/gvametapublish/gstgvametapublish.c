@@ -6,6 +6,7 @@
 
 #include "gstgvametapublish.h"
 #include "metapublish_impl.h"
+#include "statusmessage.h"
 #include <gst/base/gstbasetransform.h>
 #include <gst/gst.h>
 #include <gst/video/video.h>
@@ -70,6 +71,8 @@ enum {
     PROP_TIMEOUT,
     PROP_SIGNAL_HANDOFFS,
 };
+
+static gboolean connectionOpen;
 
 /* pad templates */
 
@@ -377,7 +380,15 @@ static gboolean gst_gva_meta_publish_start(GstBaseTransform *trans) {
 
     initializeMetaPublishImpl(gvametapublish->method);
 
-    OpenConnection(gvametapublish);
+    MetapublishStatusMessage status = OpenConnection(gvametapublish);
+    GST_DEBUG_OBJECT(gvametapublish, "%s", status.responseMessage);
+    g_free(status.responseMessage);
+    if (status.responseCode.ps == SUCCESS) {
+        connectionOpen = TRUE;
+    }
+    else {
+        connectionOpen = FALSE;
+    }
     GST_DEBUG_OBJECT(gvametapublish, "start");
 
     return TRUE;
@@ -390,7 +401,17 @@ static gboolean gst_gva_meta_publish_stop(GstBaseTransform *trans) {
     if (gvametapublish == NULL)
         return FALSE;
 
-    CloseConnection(gvametapublish);
+    if (connectionOpen) {
+        MetapublishStatusMessage status = CloseConnection(gvametapublish);
+        GST_DEBUG_OBJECT(gvametapublish, "%s", status.responseMessage);
+        g_free(status.responseMessage);
+        if (status.responseCode.ps == SUCCESS) {
+            connectionOpen = FALSE;
+        }
+        else {
+            connectionOpen = TRUE;
+        }
+    }
 
     gst_gva_meta_publish_reset(gvametapublish);
 
@@ -427,7 +448,11 @@ static GstFlowReturn gst_gva_meta_publish_transform_ip(GstBaseTransform *trans, 
         g_signal_emit(gvametapublish, gst_interpret_signals[SIGNAL_HANDOFF], 0, buf);
 
     } else {
-        WriteMessage(gvametapublish, buf);
+        if (connectionOpen) {
+            MetapublishStatusMessage status = WriteMessage(gvametapublish, buf);
+            GST_DEBUG_OBJECT(gvametapublish, "%s", status.responseMessage);
+            g_free(status.responseMessage);
+        }
     }
 
     return GST_FLOW_OK;
