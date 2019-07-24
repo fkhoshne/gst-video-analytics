@@ -32,8 +32,18 @@ json convert_roi_detection(GstBuffer *buffer) {
     gpointer state = NULL;
     json res;
     while ((meta = GST_VIDEO_REGION_OF_INTEREST_META_ITERATE(buffer, &state))) {
-
         json jobject = json::object();
+        jobject.push_back({"x", meta->x});
+        jobject.push_back({"y", meta->y});
+        jobject.push_back({"w", meta->w});
+        jobject.push_back({"h", meta->h});
+        if (meta->id != 0) {
+            jobject.push_back({"id", meta->id});
+        }
+        const gchar *roi_type = g_quark_to_string(meta->roi_type);
+        if (roi_type) {
+            jobject.push_back({"roi_type", roi_type});
+        }
         for (GList *l = meta->params; l; l = g_list_next(l)) {
             GstStructure *s = (GstStructure *)l->data;
             const gchar *s_name = gst_structure_get_name(s);
