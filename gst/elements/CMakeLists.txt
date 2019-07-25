@@ -55,12 +55,17 @@ PRIVATE
     ${GSTVIDEO_LIBRARIES}
     ${GSTALLOC_LIBRARIES}
     common
+    image_inference
     image_inference_openvino
     pre_proc
     opencv_pre_proc
     logger
     jsonconvert
 )
+
+if(${HAVE_VAAPI})
+        target_link_libraries(${TARGET_NAME} PRIVATE image_inference_async_preproc)
+endif()
 
 target_include_directories(${TARGET_NAME}
 PRIVATE
