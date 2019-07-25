@@ -133,10 +133,6 @@ json convert_roi_tensor(GstBuffer *buffer) {
             if (gst_structure_get_double(s, "confidence", &confidence_value)) {
                 jobject.push_back(json::object_t::value_type("confidence", confidence_value));
             }
-            int object_id_value;
-            if (gst_structure_get_int(s, "object_id", &object_id_value)) {
-                jobject.push_back(json::object_t::value_type("object_id", object_id_value));
-            }
             int label_id_value;
             if (gst_structure_get_int(s, "label_id", &label_id_value)) {
                 jobject.push_back(json::object_t::value_type("label_id", label_id_value));
